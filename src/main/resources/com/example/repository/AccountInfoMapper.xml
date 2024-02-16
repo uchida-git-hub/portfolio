@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.repository.AccountInfoMapper">
+
+	<resultMap type="com.example.model.AccountInfo" id="accountDataMap">
+		<id column="app_user_id" property="userId" />
+		<result column="a_password" property="password" />
+		<result column="e_mail" property="mailAddress" />
+		<result column="password_update" property="passwordUpdateDate" />
+		<result column="unlock_user" property="unlocked" />
+		<result column="date_expiry" property="dateOfExpiry" />
+		<result column="login_failed" property="loginFailed" />
+		<result column="enable" property="enabled" />
+		<result column="profile" property="profile" />
+		<result column="app_user_name" property="appUserName" />
+	</resultMap>
+
+	<!-- ユーザー1件登録 -->
+	<insert id ="insertUserOne">
+		insert into account_info(
+			 app_user_id
+			,a_password
+			,password_update
+			,e_mail
+			,unlock_user
+			,date_expiry
+			,login_failed
+			,enable
+			,profile
+			,app_user_name
+		)
+		values(
+			 #{userId}
+			,#{password}
+			,#{passwordUpdateDate}
+			,#{mailAddress}
+			,#{unlocked}
+			,#{dateOfExpiry}
+			,#{loginFailed}
+			,#{enabled}
+			,#{profile}
+			,#{appUserName}
+		)
+	</insert>
+	
+	<!-- ユーザー1件削除 -->
+	<delete id = "deleteUser" >
+		DELETE FROM 
+			account_info
+		WHERE 
+			app_user_id= #{userId}
+	</delete>
+	
+	<!-- パスワード変更,更新 -->
+	<update id ="updatePassword">
+		UPDATE
+			 account_info
+		SET
+			 a_password=#{password},
+			 password_update = #{passwordUpdateDate}
+		WHERE 
+			app_user_id = #{userId}
+	</update>
+	
+	<!-- ログイン失敗 -->
+	<update id="updateUnlock">
+		UPDATE
+			account_info
+		SET
+			login_failed = #{loginFailed},
+			unlock_user =#{unlock}
+		WHERE
+			app_user_id = #{userId}
+	</update>
+	
+	
+	<!-- 1件検索 -->
+	<select id="findByUserId" resultMap="accountDataMap">
+		SELECT 
+			 app_user_id
+			,a_password
+			,password_update
+			,e_mail
+			,unlock_user
+			,date_expiry
+			,login_failed
+			,enable
+			,profile
+			,app_user_name
+		FROM 
+			account_info
+		WHERE
+			app_user_id = #{userId}			
+	</select>
+	
+	<!-- ロックされているユーザーの検索 -->
+	<select id="selectLockList" resultMap="userdataMap">
+		SELECT
+			app_user_id,
+			app_user_name,
+			profile
+		FROM
+			account_info
+		WHERE
+			unlock_user = "0"
+	</select>
+	
+	<!-- ロックの解除 -->
+	<update id="unlock">
+		UPDATE
+			account_info 
+		SET
+			unlock_user = "1",
+			login_failed = "0"
+		WHERE
+			app_user_id = #{userId}
+	</update>
+	
+	<!-- 凍結されているユーザーの検索  -->
+	<select id="selectEnableList" resultMap="userdataMap">
+		SELECT
+			app_user_id,
+			app_user_name,
+			profile
+		FROM
+			account_info
+		WHERE
+			enable = "0"
+	</select>
+	
+	<!-- 凍結の解除 -->
+	<update id="unenable">
+		UPDATE
+			account_info
+		SET
+			enable = "1"
+		WHERE
+			app_user_id = #{userId}
+	</update>
+	
+	
+	
+	<resultMap type="com.example.model.Userdata" id="userdataMap">
+		<id column="app_user_id" property="userId" />
+		<result column="app_user_name" property="appUserName" />
+		<result column="profile" property="profile" />
+	</resultMap>
+	
+	<!-- プロフィール画面用のユーザー情報の取得 -->
+	<select id="selectUserOne" resultMap="userdataMap">
+		SELECT 
+			account_info.app_user_id,
+			account_info.app_user_name,
+			account_info.profile
+		FROM 
+			account_info
+		WHERE
+			app_user_id = #{userId}
+			and enable != 0
+	</select>
+	
+	<!-- adminとしてプロフィール画面用のユーザー情報を取得 -->
+	<select id="selectUserOneByAdomin" resultMap="userdataMap">
+		SELECT 
+			account_info.app_user_id,
+			account_info.app_user_name,
+			account_info.profile
+		FROM 
+			account_info
+		WHERE
+			app_user_id = #{userId}
+	</select>
+	
+	
+	
+	<!-- プロフィールの更新 -->
+	<update id="updateProfile">
+		UPDATE account_info
+		SET
+			app_user_name =#{appUserName},
+			profile = #{profile}
+		WHERE
+			app_user_id = #{userId}		
+	</update>
+	
+	<!-- 　ログイン失敗回数のリセット -->
+	<update id="resetLoginFail">
+		UPDATE
+			account_info 
+		SET
+			login_failed = 0
+		WHERE
+			app_user_id = #{userId}
+	</update>
+	
+	<!-- キーワードを使ってユーザーを検索 -->
+	<select id="searchUser" resultMap="userdataMap">
+		SELECT
+			account_info.app_user_id,
+			account_info.app_user_name,
+			account_info.profile
+		FROM
+			account_info
+		<where>
+			<if test="true">
+				account_info.enable != 0
+			</if>
+			<if test="keywords != null and keywords.size > 0">
+				<foreach collection="keywords" item="keyword" open="AND(" close="and account_info.enable != 0)" separator="AND">
+					account_info.profile like '%${keyword}%'
+				</foreach>
+				<foreach collection="keywords" item="keyword" open="or(" close="and account_info.enable != 0)" separator="AND" >
+					account_info.app_user_name like '%${keyword}%'
+				</foreach>
+				<foreach collection="keywords" item="keyword" open="or(" close="and account_info.enable != 0)" separator="AND"> 
+					account_info.app_user_id like '%${keyword}%'
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+	<!-- アカウントの停止 -->
+	<update id="enable">
+		UPDATE
+			account_info
+		SET
+			enable = "0"
+		WHERE
+			app_user_id = #{userId}
+	</update>
+	
+	
+
+</mapper>

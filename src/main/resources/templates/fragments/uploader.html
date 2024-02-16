@@ -1,0 +1,19 @@
+<html xmlns="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" th:href="@{/css/layout/layout.css}">
+</head>
+<body>
+	<!--アップロードボタンー-->
+	<div th:fragment="uploader">
+		<div class="button_index fixed_btn">
+			<form method="get" th:action="@{/post/upload}">
+				<button class="btn btn-primary" type="submit">
+					投稿する
+				</button>
+			</form>	
+		</div>
+	</div>
+
+</body>
+</html>

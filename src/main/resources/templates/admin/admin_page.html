@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security6"
+	layout:decorate="~{layout/layout}">
+<head>
+<meta charset="UTF-8" th:remove="tag">
+</head>
+
+<body>
+		<!--コンテンツの配置-->
+	<main layout:fragment="content"
+		class="offcanvas-outside bg-light">
+		<div class="container-fluid">
+	
+				<!--フラグメンツの表示-->
+			<div th:replace="~{fragments/header :: header}">
+			</div>
+					
+			<!-- トグルボタン-->
+			<div th:replace="~{fragments/sidebar :: toggler}">
+			</div>
+					
+				<!-- サイドバー -->
+			<div layout:fragment="sidebar"
+				th:replace="~{fragments/sidebar::sidebar}">
+			</div>
+			
+			<!-- 本体-->
+			<div style="padding: 50px 0 80px" class="content_index">
+				<div class="row align-item-center p-3 g-4" >
+					<div class="card shadow col-md-8">	
+						<div class="card-header">
+							<h6 class="text-navy my-2">
+								アドミンメニュー
+							</h6>
+						</div>	
+						<div sec:authorize="hasAuthority('ROLE_admin')" class="nav-item p-5" >
+							<a th:href="@{/admin/lockList}" class="text-primary">
+								ロックされているユーザー一覧の取得	
+							</a>
+						</div>
+					
+						<div sec:authorize="hasAuthority('ROLE_admin')" class="nav-item p-5">
+							<a th:href="@{/admin/enableList}" class="text-primary">
+								凍結されているユーザー一覧
+							</a>
+						</div>
+					
+					</div>
+				</div>
+			</div>	
+		</div>
+		
+	</main>
+
+</body>
+</html>

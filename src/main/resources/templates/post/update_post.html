@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+			<!--コンテンツの配置-->
+	<main layout:fragment="content"
+		class="offcanvas-outside bg-light">
+		<div class="container-fluid">
+		
+	
+				<!--フラグメンツの表示-->
+			<div th:replace="~{fragments/header :: header}">
+			</div>
+					
+			<!-- トグルボタン-->
+			<div th:replace="~{fragments/sidebar :: toggler}">
+			</div>
+					
+				<!-- サイドバー -->
+			<div layout:fragment="sidebar"
+				th:replace="~{fragments/sidebar::sidebar}">
+			</div>
+				
+			<div style="padding: 50px 0 80px" class="content_index">
+				<div class="row align-item-center p-3 g-4" >
+					<div class="col-md-7">
+				
+						<form th:action="@{/post/update}" th:object="${postUpdateForm}" method="post">
+							<div class="form-group">
+								<label for="message">
+									本文
+								</label>
+								<textarea class="form-control"  
+									th:field="*{message}"
+									placeholder="投稿内容を入力してください"
+									th:errorclass="is-invalid">
+								<span th:text="*{message}" th:remove="tag"></span>
+								</textarea>
+								<div class="invalid-feedback" th:errors="*{message}"></div>
+							</div>
+							
+							<br>
+							
+							<div class="form-group">
+								<label for="postCategory">
+									ポストカテゴリ
+								</label>
+								<select class="form-control" th:field="*{postCategoryId}">
+									<option th:value="1" th:text="質問"></option>
+									<th:block th:each="postCategory:${postCategories}" >
+										<option th:value="${postCategory.postCategoryId}"
+												th:text="${postCategory.postCategoryName}">
+										</option>
+									</th:block>
+								</select>
+							</div>
+							
+							<br>
+							
+							<div class="form-group">
+								<label for="techCategory">
+									技術カテゴリー
+								</label>
+								<select class="form-control" th:field="*{techCategoryId}">
+									<option th:value="4" th:text="java"></option> 
+									<th:block th:each="techCategory:${techCategories}">
+										<option th:value="${techCategory.techCategoryId}"
+												th:text="${techCategory.techCategoryName}">
+										</option>
+									</th:block>
+								</select>
+							</div>
+							
+							<br>
+							
+							<input type="hidden" name="postId" th:value="*{postId}">
+							<input type="hidden" name="userId" th:value="*{userId}">
+							
+							
+							<div class="form-button">
+								<input class="btn btn-green" type="submit" value="投稿する">
+							</div>
+							
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+</html>

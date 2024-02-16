@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.repository.PostMapper">
+	
+	<!-- アカウントの削除に使用する -->
+	<!-- 削除するアカウントの投稿を全て削除する -->
+	<delete id="deletePostByUserId">
+		delete 
+		from post
+		where post.app_user_id = #{userId}
+	</delete>
+
+	<!-- 投稿する -->
+	<insert id ="uploadPost" parameterType="com.example.model.Post">
+		INSERT INTO 
+			post(
+				post_id,
+				app_user_id,
+				message,
+				created
+			)
+			VALUES(
+				#{postId},
+				#{userId},
+				#{message},
+				#{created}
+			)
+		<selectKey resultType="int" keyProperty="postId" order="AFTER">
+			SELECT @@IDENTITY
+		</selectKey>
+	</insert>
+	
+	<!-- 投稿内容の修正 -->
+	<update id ="updatePost">
+		UPDATE 
+			post
+		SET 
+			message=#{message}
+		WHERE 
+			post_id = #{postId}
+	</update>
+	
+	<!-- 投稿の削除 -->
+	<delete id = "deletePostByPostId">
+		DELETE 
+		FROM 
+			post
+		WHERE
+			post_id = #{postId}
+	</delete>
+	
+	<!-- ユーザーの投稿一覧を取得する -->
+	<select resultMap="postInfoMap" id="selectAllPostByUserIdOrderByNew">
+		SELECT 
+			post_info.post_id,
+			post_info.app_user_id,
+			post_info.message,
+			post_info.created,
+			account_info.app_user_name,
+			tech_category.tech_category_name,
+			post_category.post_category_name,
+			like_table.app_user_id as like_app_user_id
+		FROM
+			(SELECT
+				post.post_id,
+				post.app_user_id,
+				post.message,
+				post.created
+			 FROM post
+			 WHERE post.app_user_id = #{userId}) as post_info 
+				left join account_info
+					on post_info.app_user_id = account_info.app_user_id
+				left join (t_category_table
+						left join tech_category
+							on t_category_table.tech_category_id = tech_category.tech_category_id)
+					on post_info.post_id=t_category_table.post_id
+				left join (p_category_table
+						left join post_category
+							on p_category_table.post_category_id = post_category.post_category_id)
+					on post_info.post_id=p_category_table.post_id
+				left join like_table
+					on like_table.post_id=post_info.post_id
+		WHERE
+			post_info.app_user_id=#{userId}
+		ORDER BY 
+			post_info.created desc
+	</select>
+	
+	<!-- 投稿の詳細を取得する -->
+	<select id="selectPostInfoByPostId" resultMap="postInfoMap">
+		SELECT
+			post_info.post_id,
+			post_info.app_user_id,
+			post_info.message,
+			post_info.created,
+			account_info.app_user_name,
+			tech_category.tech_category_name,
+			post_category.post_category_name,
+			like_table.app_user_id as like_app_user_id
+		FROM
+			(SELECT 
+				post.post_id,
+				post.app_user_id,
+				post.message,
+				post.created
+			 FROM post
+			 WHERE post_id = #{postId}) as post_info
+				left join account_info
+					on post_info.app_user_id = account_info.app_user_id
+				left join t_category_table
+					on post_info.post_id = t_category_table.post_id
+						left join tech_category
+							on t_category_table.tech_category_id = tech_category.tech_category_id
+				left join p_category_table
+					on post_info.post_id = p_category_table.post_id	
+						left join post_category
+							on p_category_table.post_category_id = post_category.post_category_id
+				left join like_table
+					on post_info.post_id=like_table.post_id
+		WHERE
+			post_info.post_id = #{postId}
+	</select>
+	
+	<!-- ポストの検索 -->
+	<select id="searchPost" resultMap="postInfoMap">
+		SELECT
+			post.post_id,
+			post.app_user_id,
+			post.message,
+			post.created,
+			account_info.app_user_name,
+			tech_category.tech_category_name,
+			post_category.post_category_name,
+			like_table.app_user_id as like_app_user_id
+		FROM
+			post
+			inner join account_info
+				on post.app_user_id = account_info.app_user_id
+			inner join t_category_table 
+				on post.post_id = t_category_table.post_id
+					inner join tech_category
+						on t_category_table.tech_category_id = tech_category.tech_category_id
+			inner join p_category_table
+				on post.post_id = p_category_table.post_id 
+					inner join post_category
+						on p_category_table.post_category_id = post_category.post_category_id
+			inner join like_table
+				on post.post_id=like_table.post_id
+		<where>
+			<if test="true">
+				account_info.enable != 0
+			</if>
+			<if test="keywordsList != null and keywordsList.size > 0">
+			 	<foreach collection="keywordsList" item="keyword" open=" and(" close=")" separator=" AND " >
+			            post.message LIKE '%${keyword}%'
+			  </foreach>
+			</if>
+			<if test="postCategoryId != 0">
+				AND post_category.post_category_id = #{postCategoryId}
+			</if>
+			<if test="techCategoryId != 0">
+				AND tech_category.tech_category_id = #{techCategoryId}
+			</if>
+			
+		</where>
+		ORDER BY
+			post.created desc
+	</select>
+	
+	
+	<!-- タイムラインの取得 -->
+	<select id="selectTimeLine" resultMap="postInfoMap">
+		
+		SELECT
+			post.post_id,
+			post.app_user_id,
+			post.message,
+			post.created,
+			account_info.app_user_name,
+			tech_category.tech_category_name,
+			post_category.post_category_name,
+			like_table.app_user_id as like_app_user_id
+		FROM
+			post 
+			inner join account_info
+				on post.app_user_id = account_info.app_user_id
+			inner join t_category_table
+				on post.post_id=t_category_table.post_id
+					inner join tech_category
+						on t_category_table.tech_category_id = tech_category.tech_category_id	
+			inner join p_category_table
+				on post.post_id=p_category_table.post_id
+					inner join post_category
+						on p_category_table.post_category_id = post_category.post_category_id
+			inner join like_table
+				on post.post_id = like_table.post_id
+		<where>
+			<if test="true">
+				account_info.enable != 0
+			</if>
+			<if test="follows != null">
+				<foreach collection="follows" item="follow"
+				 	open="and post.app_user_id IN (" separator="," close=")">
+				 	#{follow}
+				 </foreach>
+			</if>
+		</where>	
+		ORDER BY
+			post.created desc
+	</select>
+	
+	<resultMap type="com.example.model.PostInfo" id="postInfoMap">
+		<id column="post_id" property="postId" />
+		<result column="app_user_id" property="userId" />
+		<result column="message" property="message"/>
+		<result column="created" property="created" />
+		<result column="app_user_name" property="appUserName" />
+		<result column="tech_category_name" property="techCategory"/>
+		<result column="post_category_name" property="postCategory" />
+		<collection property="userList"  resultMap="likeMap" columnPrefix="like_" />
+	</resultMap>
+	
+	<resultMap type="string" id="likeMap">
+		<result column="app_user_id" />
+	</resultMap>
+	
+	
+	
+</mapper>
+

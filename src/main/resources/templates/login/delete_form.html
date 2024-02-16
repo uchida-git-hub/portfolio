@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultaq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+<head>
+<meta charset="UTF-8" th:remove="tag">
+</head>
+<body>
+		<!--コンテンツの配置-->
+	<main layout:fragment="content"
+		class="offcanvas-outside bg-light">
+		<div class="container-fluid">
+		
+	
+				<!--フラグメンツの表示-->
+			<div th:replace="~{fragments/header :: header}">
+			</div>
+					
+			<!-- トグルボタン-->
+			<div th:replace="~{fragments/sidebar :: toggler}">
+			</div>
+					
+				<!-- サイドバー -->
+			<div layout:fragment="sidebar"
+				th:replace="~{fragments/sidebar::sidebar}">
+			</div>
+			
+			<!-- 投稿ボタン -->
+			<div th:replace="~{fragments/uploader::uploader}">
+			</div>
+			
+			<div style="padding: 50px 0 80px" class="content_index">
+				<div class="row align-item-center p-3 g-4" >
+				
+					<div class="card shadow col-md-8">
+						<!--ヘッダー -->	
+						<div class="card-header">
+							<h4 class="text-danger my-2">
+								アカウントの削除
+							</h4>
+						</div>
+						
+						<!-- 本体-->
+						<div class="card-boby pt-3">
+	
+							<h5>アカウント削除を削除するにはユーザーIDとパスワードを入力してください</h3>
+							
+							<form method="post" th:action="@{/login/delete}" th:object="${deleteForm}">
+								<div class="form-group">
+									<label class="form-label">ユーザーIDを入力してください</label>
+									<input class="form-control" type="text" th:field="*{userId}">
+									<div class="invalid-feedback" th:error="*{userId}"></div>
+								</div>
+								<br>
+								<div>
+									<label>アカウントを削除する</label>
+									<input type="checkbox" th:field="*{flg}">
+									<div class="invalid-feedback" th:error="*{flg}"></div>	
+								</div>
+								<br>
+								<button type="submit" class="btn btn-danger">
+									アカウントの削除
+								</button>
+							</form>
+							<br>
+							<div class="text-center">
+								<a th:href="@{/user/mypage}">マイページに戻る</a>
+							</div>	
+							<br>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+</html>

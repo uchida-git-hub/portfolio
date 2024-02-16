@@ -1,0 +1,90 @@
+/*Coler*/
+.bg-image{
+	background:
+		linear-gradient(
+		rgba(34,74,190,1),
+		rgba(34,74,190,0.7)
+		),
+		url('/image/photo.jpg');
+		background-size: cover;
+}
+
+.text-navy{
+	color:#224abe;
+}
+
+.btn-navy{
+	color: white;
+	background-color: #0d47a1;
+}
+
+
+.offcanvas{
+	width: 200px !important;
+}
+
+@media(min-width: 992px){
+	.offcanvas{
+		transform: none !important;
+		visibility: visible !important;
+	}
+	
+	.offcanvas-outside{
+		transition: margin-left 0.3s ease-in-out;
+		margin-left:200px;
+	}
+}
+
+.btn-circle{
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	opacity: 0.5;
+	border: 0;
+}
+
+/*link*/
+a{
+	text-decoration: none;
+}
+
+/*size*/
+.mh-100{
+	height: calc(100vh - 56px)
+}
+
+.table > :not(:first-child){
+	border-top: 0;
+}
+
+/*pタグに関する設定*/
+p{
+        width: 100%;
+/*        background-color: #dbedf0;*/
+    }
+ .word-break-break-all {
+    word-break: break-all;
+  }
+ 
+.fixed_profile
+{
+  position: fixed;
+  width: 32%;
+}
+
+.fixed_btn
+{
+  position: fixed;
+  bottom: 20px; 
+  right: 10px;
+  padding: 20px 100px;
+}
+
+.button_index
+{
+ z-index: 2000;
+}
+
+.content_index{
+z-index: 1;
+}

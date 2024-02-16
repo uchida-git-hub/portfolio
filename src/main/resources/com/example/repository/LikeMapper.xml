@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.repository.LikeMapper">
+
+	<!-- いいねの追加 -->
+	<insert id ="insertLike">
+		INSERT INTO 
+			like_table(
+				post_id ,
+				app_user_id
+			)
+			values(
+				#{postId},
+				#{userId}
+			)
+	</insert>
+	
+	<!-- いいねした投稿の一覧を表示 -->
+	<select id = "selectPostInfoByUserId" resultMap="likeMap">
+		SELECT
+			like_posts.app_user_id as like_app_user_id,
+			post.post_id,
+			post.app_user_id,
+			post.message,
+			post.created,
+			account_info.app_user_name,
+			tech_category.tech_category_name,
+			post_category.post_category_name
+		FROM 
+			(SELECT 
+				like_table.post_id,
+				like_table.app_user_id
+			 FROM
+			 	like_table
+			 WHERE
+			 	like_table.app_user_id = #{userId}
+			) as like_posts
+			INNER JOIN account_info
+				on like_posts.app_user_id = account_info.app_user_id
+			INNER JOIN post
+				ON like_posts.post_id = post.post_id
+			INNER JOIN t_category_table
+				ON like_posts.post_id = t_category_table.post_id
+		 			INNER JOIN tech_category
+						ON t_category_table.tech_category_id = tech_category.tech_category_id
+			INNER JOIN p_category_table
+				ON post.post_id = p_category_table.post_id
+					INNER JOIN post_category
+						ON p_category_table.post_category_id = post_category.post_category_id
+		WHERE
+			like_posts.app_user_id = #{userId}
+		ORDER BY post.created desc
+	</select>
+	
+	<!-- いいねの取り消し -->
+	<delete id = "deleteLike">
+		DELETE 
+		FROM 
+			like_table
+		WHERE 
+			post_id = #{postId} 
+			and
+			app_user_id = #{userId}
+	</delete>
+	
+	<!-- アカウントの削除に使用 -->
+	<delete id="deleteLikeByUserId">
+		DELETE 
+		FROM like_table
+		WHERE app_user_id = #{userId}
+	</delete>
+	
+	<!-- ポストの削除の際に使用 -->
+	<delete id="deleteLikeByPostId">
+		delete 
+		from like_table
+		where post_id=#{postId}
+	</delete>
+	
+	<resultMap type="com.example.model.PostInfo" id="likeMap">
+		<id column="post_id" property="postId" />
+		<result column="app_user_id" property="userId" />
+		<result column="message" property="message" />
+		<result column="created" property="created" />
+		<result column="app_user_name" property="appUserName" />
+		<result column="tech_category_name" property="techCategory"/>
+		<result column="post_category_name" property="postCategory" />
+		<collection javaType="ArrayList" property="userList" >
+			<result column="like_app_user_name" />
+		</collection>
+		
+	</resultMap>
+
+</mapper>

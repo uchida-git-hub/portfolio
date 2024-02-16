@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.repository.FollowMapper">
+	<!--  ユーザーをフォローする -->
+	<insert id = "followUserOne" >
+		insert into follow(
+			app_user_id,
+			follower_id
+		) 
+		values(
+			#{userId},
+			#{follower}
+		)
+	</insert>
+	
+	<!-- フォローの解除 -->
+	<delete id = "deleteFollowOne">
+	 	DELETE FROM 
+	 		follow
+	 	WHERE 
+	 		app_user_id = #{userId}
+	 		AND 
+	 		follower_id =#{follower}
+	</delete>
+	
+	<!--  フォローしているユーザーを取得 -->
+	<select id= "selectFollowUserId" resultMap="user">
+	 		SELECT 
+	 			account_info.app_user_id,
+	 			account_info.app_user_name,
+	 			account_info.profile
+	 		FROM
+	 			account_info
+	 			left join(select 
+	 						follow.app_user_id ,
+	 						follow.follower_id   
+	 					from 
+	 						follow 
+	 					where 
+	 						follow.app_user_id = #{userId}) as follow_t
+	 				on account_info.app_user_id = follow_t.follower_id
+	 		WHERE
+	 			follow_t.app_user_id = #{userId}
+	 			AND account_info.enable != 0 
+ 	</select>
+	
+	<!-- フォローされているユーザーの一覧を表示 -->
+	<select id= "selectFollowerByUserId" resultMap="user">
+		SELECT 
+ 			account_info.app_user_id,
+ 			account_info.app_user_name,
+ 			account_info.profile
+		FROM 
+			account_info
+				left join(select
+							follow.app_user_id,
+							follow.follower_id
+						from
+							follow
+						where
+							follow.follower_id = #{userId})	as 	follow_t
+				on account_info.app_user_id = follow_t.app_user_id
+		WHERE
+			follow_t.follower_id = #{userId}
+			AND account_info.enable != 0
+	</select>
+	
+	<resultMap id="followList" type="com.example.model.Userdata">
+		<collection property="followList" resultMap="user" />
+	</resultMap>
+	
+	<resultMap id="user" type="com.example.model.Userdata">
+			<id column="app_user_id" property="userId"/>
+			<result column="app_user_name" property="appUserName" />
+			<result column="profile" property="profile" />
+	</resultMap>
+	
+	<delete id="deleteFollowByFollwer">
+		DELETE FROM follow
+		WHERE follower_id=#{userId}
+	</delete>
+
+
+</mapper>
+
+

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+<head>
+	<meta charset="UTF-8" th:remove="tag">
+</head>
+
+<body class="bg-light">
+	<!--コンテンツの配置-->
+	<main layout:fragment="content" class="bg-image vh-100">
+		<div class="container pt-4">
+				
+			<!-- 中央に配置-->
+			<div class="row justify-content-center">
+					
+				<!--登録フォームの本体-->
+				<div class="card shadow" style="max-width: 480px;">
+					<div class="card-body">
+						<h3 class="card-title mb-3 text-center text-navy">
+							ユーザー登録
+						</h3>
+	
+						<form  method="post" th:action="@{/login/signup}" class="form-signup" th:object="${accountForm}">
+							<div class="form-group">
+								<label class="form-label" for="userId">ユーザーID</label>
+								<input th:errorclass="is-invalid" type="text" class="form-control" 
+									th:field="*{userId}" placeholder="ユーザーID">
+								<div class="invalid-feedback" th:errors="*{userId}">
+								</div>
+							</div>	
+							
+							<div class="form-group">
+								<label class="form-label" for="appUserName">ユーザー名</label>
+								<input th:errorclass="is-invalid" type="text" class="form-control" 
+									th:field="*{appUserName}" placeholder="ユーザーID">
+								<div class="invalid-feedback"th:errors="*{appUserName}">									
+								</div>
+							</div>
+							
+							
+							<div class="form-group">
+								<label class="form-label" for="mailaddress">メールアドレス</label>
+								<input th:errorclass="is-invalid" type="text" class="form-control" 
+									th:field="*{mailAddress}" placeholder="メールアドレス">
+								<div class="invalid-feedback" th:errors="*{mailAddress}">
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="form-label" for="profile">プロフィール</label>
+								<input th:errorclass="is-invalid" type="text" class="form-control" 
+									th:field="*{profile}" placeholder="プロフィール" >
+								<div class="invalid-feedback" th:errors="*{profile}">
+								</div>								
+							</div>
+							
+							<div class="form-group">
+								<label class="form-label" for="password">パスワード</label>
+								<input th:errorclass="is-invalid" class="form-control" id="password"
+									name="password" type="password" th:value="*{password}" placeholder="パスワード">
+								<div class="invalid-feedback" th:errors="*{password}">
+								</div>
+							</div>
+							
+							<br>
+					
+							<button type="submit" class="w-100 btn btn-navy">
+								登録する
+							</button>
+							
+						</form>
+						
+						<br>
+						
+						<div class="text-center">
+							<a th:href="@{/login}" class="text-navy">
+								ログイン画面に戻る
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+</body>
+</html>
