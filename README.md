@@ -102,6 +102,9 @@
 投稿画面
 ![スクリーンショット (692)](https://github.com/uchida-git-hub/portfolio/assets/159521751/8a9364eb-40e9-44de-9f1b-87df5e25db74)
 
+投稿したつぶやきの詳細画面
+![スクリーンショット (695)](https://github.com/uchida-git-hub/portfolio/assets/159521751/5206acb8-2736-471f-a9ce-586f5422271e)
+
 詳細画面からコメントを投稿する
 ![スクリーンショット (691)](https://github.com/uchida-git-hub/portfolio/assets/159521751/13b8275a-93ed-4a3e-8e26-a5c2a446a367)
   
