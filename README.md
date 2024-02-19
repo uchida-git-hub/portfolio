@@ -77,6 +77,18 @@
 - フォローを解除する機能。
 - 自分がフォローしているユーザーの一覧を表示する機能。
 - 自分をフォローしているユーザーの一覧を表示する機能。
+
+マイページ
+![スクリーンショット (675)](https://github.com/uchida-git-hub/portfolio/assets/159521751/d6b1f5e9-f3a2-4fea-b381-50b61f3c5626)
+
+ユーザーページ
+![スクリーンショット (690)](https://github.com/uchida-git-hub/portfolio/assets/159521751/70bea849-d8c7-4128-9b1b-f3e3baca7717)
+
+フォローしているユーザー
+![スクリーンショット (676)](https://github.com/uchida-git-hub/portfolio/assets/159521751/183ab376-db45-4751-a6df-f09114373ef1)
+
+
+
 #### 投稿に関する機能
 - つぶやきを投稿する機能
 - 投稿を編集する機能（投稿を行ったアカウントでのみ実行可能）
