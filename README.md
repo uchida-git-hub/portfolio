@@ -63,6 +63,10 @@
 
 ログイン画面
 ![スクリーンショット (671)](https://github.com/uchida-git-hub/portfolio/assets/159521751/c1e3c0b9-f79f-4a9b-accc-b467178b60de)
+
+パスワードの有効期限切れ
+![スクリーンショット (693)](https://github.com/uchida-git-hub/portfolio/assets/159521751/0af36e0f-f21e-4a91-93c9-4b6954d1abf0)
+
 #### ユーザーに関する機能
 - プロフィールの変更機能。
 - 他のユーザーのプロフィール画面を表示する機能。この画面からフォローの機能を利用できる。
