@@ -67,6 +67,9 @@
 パスワードの有効期限切れ
 ![スクリーンショット (693)](https://github.com/uchida-git-hub/portfolio/assets/159521751/0af36e0f-f21e-4a91-93c9-4b6954d1abf0)
 
+ロックがかかった場合の画面
+![スクリーンショット (686)](https://github.com/uchida-git-hub/portfolio/assets/159521751/4bf7c87a-505f-4ba6-a5fd-0b23b56119e0)
+
 #### ユーザーに関する機能
 - プロフィールの変更機能。
 - 他のユーザーのプロフィール画面を表示する機能。この画面からフォローの機能を利用できる。
