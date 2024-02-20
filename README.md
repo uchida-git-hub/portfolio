@@ -9,8 +9,10 @@
 
 ## アプリケーションのURL
 https://aws-sample-application.work/login/login  
-パソコンからアクセスしていただけますと幸いです。
-
+パソコンからアクセスしていただけますと幸いです。  
+アカウントの登録をせずに以下のサンプル用のアカウントでログインして頂くことも可能です  
+userID : sample1  
+password : Login1234567  
 ## 使用した技術
  - JAVA17.0.10_7
  - SPRINGBOOT3.1.8
